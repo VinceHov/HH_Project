@@ -2,21 +2,22 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager # Обход PATH
-import time
+import time # Время = деньги, как говорится
 import sys, os  # sys нужен для передачи argv в QApplication
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets 
 import design  # Файл дизайна
 import re # Для отправки текста в форму входа
-import urllib.parse
+import urllib.parse # Чтобы закодировать текст в url 
 
-def input_keys(phrase, input_form):
+def input_keys(phrase, input_form): # Единственный полезный кусок кода
     for key in re.findall(r'.', phrase): 
-            time.sleep(0.1) 
+            time.sleep(0.1) # Каждый раз когда ты запускаешь прогу я убиваю len(phrase) * 0.1 секунд твоей жизни.
             input_form.send_keys(key)
 
 def do_things(login, passwd, keyword_= None, reslink_= None):
-    if "9773616899" in login:
+    if "9773616899" in login: # Тут должно было идти диалоговое окошко "Настя, иди н!@#й", но мне лень 
         exit() 
+        
     dr = webdriver.Chrome(ChromeDriverManager().install())
         # Инициализация
     count = 0 
@@ -30,14 +31,14 @@ def do_things(login, passwd, keyword_= None, reslink_= None):
     dr.get("https://hh.ru/account/login?backurl=%2F") # Вход в аккаунт
     time.sleep(1)
 
-    login_form = dr.find_element_by_xpath("/html/body/div[6]/div/div[1]/div[3]/div/div/div/div/div/form/div[1]/input")#("/html/body/div[2]/div/div/div/div[2]/div/div/form/div[1]/input")
-    password_form = dr.find_element_by_xpath("/html/body/div[6]/div/div[1]/div[3]/div/div/div/div/div/form/div[2]/span/input")#("/html/body/div[2]/div/div/div/div[2]/div/div/form/div[2]/span/input")
+    login_form = dr.find_element_by_xpath("/html/body/div[6]/div/div[1]/div[3]/div/div/div/div/div/form/div[1]/input")
+    password_form = dr.find_element_by_xpath("/html/body/div[6]/div/div[1]/div[3]/div/div/div/div/div/form/div[2]/span/input")
 
     input_keys(login, login_form) # Логин/Пароль
     input_keys(passwd, password_form)
 
     time.sleep(3)
-    dr.find_element_by_xpath("/html/body/div[6]/div/div[1]/div[3]/div/div/div/div/div/form/div[4]/button").click()#("/html/body/div[2]/div/div/div/div[2]/div/div/form/div[4]/button").click()
+    dr.find_element_by_xpath("/html/body/div[6]/div/div[1]/div[3]/div/div/div/div/div/form/div[4]/button").click()
     time.sleep(3)
 
     while captha_solved != True: # Проверка на то, решена ли капча
@@ -62,15 +63,13 @@ def do_things(login, passwd, keyword_= None, reslink_= None):
         search = "https://hh.ru/search/vacancy?L_is_autosearch=false&clusters=true&enable_snippets=true&text=python&page="
 
     while count < 12: # Выгребаем 600 вакансий
-                # https://hh.ru/search/vacancy?L_is_autosearch=false&clusters=true&enable_snippets=true&resume=3b5da9c4ff07fc756d0039ed1f526e3769367a&page= // Для того чтобы искать доступные вакансии
-                # https://hh.ru/search/vacancy?L_is_autosearch=false&clusters=true&enable_snippets=true&text=python&page=
-
+        
         dr.get("%s%d" % (search, count))
         count += 1 
         if not maximized:
             dr.maximize_window() 
             maximized = True
-        bs = BeautifulSoup(dr.page_source,"lxml")
+        bs = BeautifulSoup(dr.page_source,"lxml") 
         if not refreshed:
             dr.refresh()
         time.sleep(3)
@@ -83,12 +82,12 @@ def do_things(login, passwd, keyword_= None, reslink_= None):
     
     
     badhrefs = []
-    for orderhref in hrefs:
+    for orderhref in hrefs: # Откликаемся на вакансии
         try:
             dr.get(orderhref)
             dr.execute_script('document.getElementsByClassName("bloko-button                            bloko-button_primary                            HH-VacancyResponsePopup-Submit                            HH-SubmitDisabler-Submit                            HH-SimpleValidation-Submit")[0].click()')
         except:
-            badhrefs.append(orderhref)
+            badhrefs.append(orderhref) # Это для отладки было сделано, осталось чисто по приколу
             pass
     
 class ExampleApp(QtWidgets.QMainWindow, design.Ui_Dialog):
@@ -100,8 +99,6 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_Dialog):
         self.pushButton.clicked.connect(self.initialize_text)
        
     def initialize_text(self):
-        # login_ = self.textEdit.toPlainText()
-        # passwd_ = self.textEdit_2.toPlainText()
         login_  = self.input_log.text()
         passwd_ = self.input_pass.text()
         keyword_ = self.input_keyword.text()
@@ -117,4 +114,4 @@ def main():
     app.exec_()  # и запускаем приложение
 
 if __name__ == '__main__':  # Если мы запускаем файл напрямую, а не импортируем
-    main()  # то запускаем функцию main()
+    main()  

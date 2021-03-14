@@ -22,5 +22,5 @@ PROFIT
 
 
 В случае неправильной работы программы или ошибок обращайтесь по контактам: 
-VK: https://vk.com/vincehov_official
-TG: https://t.me/semen_gde_sahar
+- VK: https://vk.com/vincehov_official
+- TG: https://t.me/semen_gde_sahar
